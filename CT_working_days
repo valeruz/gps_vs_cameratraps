@@ -1,0 +1,170 @@
+# calcolo i working days
+sessione_controllo <- dbGetQuery(dbconn, "select * from trophic_cascades.sessione_controllo_ft_vf")
+
+fvars<- c(2,3,4,5,6,9,11)
+for(i in fvars){
+  sessione_controllo[,i]<- as.factor(sessione_controllo[,i])
+}
+attach(sessione_controllo)
+
+periodo <- as.factor(c("mensile","annuale"))
+
+ndays <- function (data_in,data,func,periodo) {
+  maggio <- rep(NA,length(data_in))
+  for (i in 1:length(maggio)) {
+    maggio[i] <- if (month(data_in[i])==month(data_func[i]) & month(data_in[i])==5) {
+      print(as.numeric(data_func[i]-data_in[i]))
+    } else {
+      if(month(data_in[i]) < month(data_func[i]) & month(data_in[i])==5) {
+        print(31 - day(data_in[i]))
+      } else {
+        if(month(data_in[i]) < month(data_func[i]) & month(data_func[i])==5) {
+          print(day(data_func[i]))
+        } else {
+          print(0)
+        }
+      }
+    }
+  }
+  giugno <- rep(NA,length(data_in))
+  for (i in 1:length(giugno)) {
+    giugno[i] <- if (month(data_in[i])==month(data_func[i]) & month(data_in[i])==6) {
+      print(as.numeric(data_func[i]-data_in[i]))
+    } else {
+      if(month(data_in[i]) < month(data_func[i]) & month(data_in[i])==6) {
+        print(30 - day(data_in[i]))
+      } else {
+        if(month(data_in[i]) < month(data_func[i]) & month(data_func[i])==6) {
+          print(day(data_func[i]))
+        } else {
+          if(month(data_in[i])==5 & month(data_func[i])==7) {
+            print(30)
+          } else {
+            print(0)
+          }
+        }
+      }
+    }
+  }
+  luglio <- rep(NA,length(data_in))
+  for (i in 1:length(luglio)) {
+    luglio[i] <- if (month(data_in[i])==month(data_func[i]) & month(data_in[i])==7) {
+      print(as.numeric(data_func[i]-data_in[i]))
+    } else {
+      if(month(data_in[i]) < month(data_func[i]) & month(data_in[i])==7) {
+        print(31 - day(data_in[i]))
+      } else {
+        if(month(data_in[i]) < month(data_func[i]) & month(data_func[i])==7) {
+          print(day(data_func[i]))
+        } else {
+          if(month(data_in[i])==6 & month(data_func[i])==8) {
+            print(31)
+          } else {
+            print(0)
+          }
+        }
+      }
+    }
+  }
+  agosto <- rep(NA,length(data_in))
+  for (i in 1:length(agosto)) {
+    agosto[i] <- if (month(data_in[i])==month(data_func[i]) & month(data_in[i])==8) {
+      print(as.numeric(data_func[i]-data_in[i]))
+    } else {
+      if(month(data_in[i]) < month(data_func[i]) & month(data_in[i])==8) {
+        print(31 - day(data_in[i]))
+      } else {
+        if(month(data_in[i]) < month(data_func[i]) & month(data_func[i])==8) {
+          print(day(data_func[i]))
+        } else {
+          if(month(data_in[i])==7 & month(data_func[i])==9) {
+            print(31)
+          } else {
+            print(0)
+          }
+        }
+      }
+    }
+  }
+  settembre <- rep(NA,length(data_in))
+  for (i in 1:length(settembre)) {
+    settembre[i] <- if (month(data_in[i])==month(data_func[i]) & month(data_in[i])==9) {
+      print(as.numeric(data_func[i]-data_in[i]))
+    } else {
+      if(month(data_in[i]) < month(data_func[i]) & month(data_in[i])==9) {
+        print(30 - day(data_in[i]))
+      } else {
+        if(month(data_in[i]) < month(data_func[i]) & month(data_func[i])==9) {
+          print(day(data_func[i]))
+        } else {
+          if(month(data_in[i])==8 & month(data_func[i])==10) {
+            print(31)
+          } else {
+            print(0)
+          }
+        }
+      }
+    }
+  }
+  ottobre <- rep(NA,length(data_in))
+  for (i in 1:length(ottobre)) {
+    ottobre[i] <- if (month(data_in[i])==month(data_func[i]) & month(data_in[i])==10) {
+      print(as.numeric(data_func[i]-data_in[i]))
+    } else {
+      if(month(data_in[i]) < month(data_func[i]) & month(data_in[i])==10) {
+        print(31 - day(data_in[i]))
+      } else {
+        if(month(data_in[i]) < month(data_func[i]) & month(data_func[i])==10) {
+          print(day(data_func[i]))
+        } else {
+          print(0)
+        }
+      }
+    }
+  }
+  a <- cbind(as.character(sessione_controllo$sito_code),maggio,giugno,luglio,agosto,settembre,ottobre)
+  a <- as.data.frame(a)
+  nvars<- c(2,3,4,5,6,7)
+  for(i in nvars){
+    a[,i]<- as.numeric(a[,i])
+  }
+  fvars <- c(1)
+  for(i in fvars){
+    a[,i]<- as.factor(a[,i])
+  }
+  wd.maggio <- aggregate(a$maggio,by=list(a$V1),FUN=sum)
+  wd.maggio$y <- 5
+  wd.giugno <- aggregate(a$giugno,by=list(a$V1),FUN=sum)
+  wd.giugno$y <- 6
+  wd.luglio <- aggregate(a$luglio,by=list(a$V1),FUN=sum)
+  wd.luglio$y <- 7
+  wd.agosto <- aggregate(a$agosto,by=list(a$V1),FUN=sum)
+  wd.agosto$y <- 8
+  wd.settembre <- aggregate(a$settembre,by=list(a$V1),FUN=sum)
+  wd.settembre$y <- 9
+  wd.ottobre <- aggregate(a$ottobre,by=list(a$V1),FUN=sum)
+  wd.ottobre$y <- 10
+  b <- rbind(wd.maggio,wd.giugno,wd.luglio,wd.agosto,wd.settembre,wd.ottobre)
+  colnames(b) <- c("sito_code","working_days","month")
+  b$sito_code_mese <- as.factor(paste(b$sito_code,b$month,sep="_"))
+  c <- b %>% 
+    group_by(sito_code) %>%
+    summarise(working_days=sum(working_days)) %>%
+    as.data.frame(.)
+  d <- b %>%
+    mutate(periodo = ifelse(month %in% c(5,6),"1",
+                            ifelse(month %in% c(7,8),"2",
+                                   ifelse(month %in% c(9,10),"3",NA)))) %>%
+    group_by(sito_code,periodo) %>%    
+    summarise(working_days=sum(working_days)) %>%    
+    unite("sito_code_periodo" , sito_code,periodo,remove=FALSE) %>%    
+    as.data.frame(.)
+  ifelse(periodo=="mensile",return(b),         
+         ifelse(periodo=="annuale",return(c),                
+                ifelse(periodo=="bimestrale",return(d))))
+}
+func_bimestrale <- ndays(sessione_controllo$data_in,sessione_controllo$data_func,periodo="bimestrale")
+func_annuale <- ndays(sessione_controllo$data_in,sessione_controllo$data_func,periodo="annuale")
+head(func_bimestrale)
+head(func_annuale)
+func_bimestrale <- func_bimestrale[, -c(2,3)]

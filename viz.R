@@ -7,3 +7,5 @@ library(gitcreds)
 gitcreds_set()
 
 use_github()
+
+# Hi there!
